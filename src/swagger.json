@@ -1,0 +1,288 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Sistema de cadastro de aulas",
+        "description":"Esse é um sistema feito para cadastrar aulas, matérias e vídeos das aulas.",
+        "version": "1.0.0",
+        "contact": {
+            "email": "gustavo.n.braun@outlook.com"
+        }
+    },
+    "server": [
+        {
+            "url": "http://localhost:3000/v1",
+            "description": "Api de teste"
+        }
+    ],
+    "paths": {
+        "/room": {
+            "get": {
+                "summary": "Retorna todas as aulas",
+                "description": "Essa rota é responsável por retornar todas as aulas salvas no banco de dados.",
+                "tags": ["Room"],
+                "responses":{
+                    "200":{
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "$ref": "#/components/schemas/Room"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Cadastro de aula.",
+                "description": "Essa rota é responsável por cadastrar uma nova aula no banco de dados.",
+                "tags": ["Room"],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Room"
+                            },
+                            "examples": {
+                                "subject": {
+                                    "value": {
+                                        "name": "As 4 operações matemáticas.",
+                                        "description": "Explicando tudo sobre as 4 operações da matemática."
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "$ref": "#/components/schemas/Room"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description":"Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/room/{idRoom}": {
+            "get": {
+                "description":"Essa rota é responsável por retornar uma única aula salva no banco de dados usando o ID como parametro.",
+                "tags": ["Room"],
+                "summary": "Busca de uma aula pelo ID",
+                "parameters": [
+                    {
+                        "name": "idRoom",
+                        "in":"path",
+                        "description": "Id da aula para busca",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "$ref": "#/components/schemas/Room"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Aula não existe."
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/room/{idRoom}/create": {
+            "post": {
+                "summary": "Cadastro de vídeo a uma aula.",
+                "description": "Essa rota é responsável por cadastrar um novo vídeo para uma aula.",
+                "tags": ["Room"],
+                "parameters": [
+                    {
+                        "name": "idRoom",
+                        "in":"path",
+                        "description": "Id da aula que receberá o video.",
+                        "required": true
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Video"
+                            },
+                            "examples": {
+                                "video": {
+                                    "value": {
+                                        "title": "Divisão.",
+                                        "url": "https://google.com/divisao."
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "$ref": "#/components/schemas/Video"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Aula não existe."
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }        
+            }
+        },
+        "/room/{idRoom}/subject": {
+            "post": {
+                "summary": "Adicionando uma aula a uma materia.",
+                "description": "Fazendo o relacionamento de aula e materia",
+                "tags": ["Room"],
+                "parameters": [
+                    {
+                        "name": "idRoom",
+                        "in":"path",
+                        "description": "Id da aula que receberá o video.",
+                        "required": true
+                    }
+                ],
+                "requestBody": {
+                    "content":{
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SubjectID"
+                            },
+                            "examples": {
+                                "subjectID": {
+                                    "value": {
+                                        "subject_id": 1
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    }
+                }
+            }
+        },
+        "/subject": {
+            "post": {
+                "summary": "Cadastro de matéria.",
+                "description": "Essa rota é responsável por cadastrar uma nova matéria no banco de dados.",
+                "tags": ["Subjects"],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Subject"
+                            },
+                            "examples": {
+                                "subject" : {
+                                    "value": {
+                                        "name": "Português"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "description": "Preencha todos os parâmetros."
+                    },
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "$ref": "#/components/schemas/Subject"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Subject": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    }
+                }
+            },
+            "SubjectID": {
+                "type": "object",
+                "properties": {
+                    "subject_id": {
+                        "type": "number"
+                    }
+                }
+            },
+            "Room": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    }
+                }
+            },
+            "Video": {
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": "string"
+                    },
+                    "url": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    }
+}
+
